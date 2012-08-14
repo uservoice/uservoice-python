@@ -46,7 +46,4 @@ class OAuth:
         request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), self.consumer, None)
 
         headers = request.to_header()
-
-        req = urllib2.Request(url, None, headers)
-
-        return json.load(urllib2.urlopen(req))
+        return urllib2.urlopen(urllib2.Request(url, None, headers))

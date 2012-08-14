@@ -39,9 +39,10 @@ of the gem you just need to create an instance of UserVoice::Oauth (needs an API
 Then just start making requests like the example below demonstrates.
 
     import uservoice
+    import simplejson as json
 
     oauth = uservoice.OAuth(config['subdomain_name'], config['api_key'], config['api_secret'])
-    users = oauth.request('get', "/api/v1/users.json")
+    users = json.load(oauth.request('get', "/api/v1/users.json"))
     for user_hash in users['users']:
         print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
 
