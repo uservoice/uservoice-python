@@ -15,12 +15,13 @@ Prerequisites:
     * **API\_KEY** = oQt2BaunWNuainc8BvZpAm
     * **API\_SECRET** = 3yQMSoXBpAwuK3nYHR0wpY6opE341inL9a2HynGF2
 
-
 SSO-token generation using uservoice gem
 ----------------------------------------
 
 SSO-token can be used to create sessions for SSO users. They are capable of synchronizing the user information from one system to another.
 Generating the SSO token from SSO key and given uservoice subdomain can be done by calling UserVoice.generate\_sso\_token method like this:
+
+    import uservoice
 
     sso_token = uservoice.generate_sso_token('uservoice-subdomain', SSO_KEY, {
         'guid': 1000000,
@@ -37,7 +38,12 @@ Managing backups and extracting all the users of a UserVoice subdomain are typic
 of the gem you just need to create an instance of UserVoice::Oauth (needs an API client, see Admin Console -> Settings -> Channels -> API).
 Then just start making requests like the example below demonstrates.
 
-    TBD
+    import uservoice
+
+    oauth = uservoice.OAuth(config['subdomain_name'], config['api_key'], config['api_secret'])
+    users = oauth.request('get', "/api/v1/users.json")
+    for user_hash in users['users']:
+        print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
 
 Making 3-Legged API calls
 -------------------------
