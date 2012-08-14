@@ -1,7 +1,7 @@
 UserVoice Python module for API connections
 ===========================================
 
-This gem allows you to easily:
+This library allows you to easily:
 * Generate SSO token for creating SSO users / logging them into UserVoice (http://uservoice.com).
 * Do 3-legged and 2-legged UserVoice API calls safely without having to worry about the cryptographic details (unless you want).
 
