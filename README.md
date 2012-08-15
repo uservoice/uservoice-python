@@ -41,7 +41,7 @@ Then just start making requests like the example below demonstrates.
     import uservoice
     import simplejson as json
 
-    oauth = uservoice.OAuth(config['subdomain_name'], config['api_key'], config['api_secret'])
+    oauth = uservoice.OAuth('uservoice-subdomain', API_KEY, API_SECRET)
     users = json.load(oauth.request('get', "/api/v1/users.json"))
     for user_hash in users['users']:
         print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
@@ -52,4 +52,18 @@ Making 3-Legged API calls
 If you want to make calls on behalf of a user, you need 3-legged API calls. It basically requires you to pass a link to UserVoice, where
 user grants your site permission to access his or her data in his or her account
 
-    TBD
+    import uservoice
+    import simplejson as json
+
+    CALLBACK_URL = 'http://localhost:3000/' # This represents the URL you want UserVoice send you back
+
+    oauth = uservoice.OAuth('uservoice-subdomain', API_KEY, API_SECRET, callback=CALLBACK_URL)
+
+    print "1. Go to " + oauth.authorize_url() + " and click \"Allow access\"."
+    print "2. Then type the oauth_verifier which is passed as a GET parameter to the callback URL:"
+
+    oauth.get_access_token(verifier=raw_input().strip())
+
+    user = json.load(oauth.request('get', "/api/v1/users/current.json"))['user']
+
+    print 'User: "' + user['name'] + '", Profile URL: ' + user['url']
