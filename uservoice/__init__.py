@@ -37,6 +37,7 @@ def generate_sso_token(subdomain_name, sso_key, user_attributes):
 class OAuth:
     def __init__(self, subdomain_name, api_key, api_secret, callback=None):
         self.request_token = None
+        self.access_token = None
         self.api_url = "https://" + subdomain_name + ".uservoice.com"
         self.consumer = oauth.OAuthConsumer(api_key, api_secret)
         self.callback = callback
