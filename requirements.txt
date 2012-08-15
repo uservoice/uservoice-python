@@ -1,0 +1,6 @@
+UserVoice
+pycrypto==2.5
+pytz==2012d
+PyYAML==3.10
+simplejson==2.4.0
+tweepy==1.10
