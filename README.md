@@ -9,7 +9,7 @@ Examples
 ========
 
 Prerequisites:
-* Suppose your UserVoice site is at http://uservoice-subdomain.uservoice.com/
+* Suppose your UserVoice site is at http://uservoice-subdomain.uservoice.com/ and **USERVOICE\_SUBDOMAIN** = uservoice-subdomain
 * **SSO\_KEY** = 982c88f2df72572859e8e23423eg87ed (Admin Console -> Settings -> General -> User Authentication)
 * The account has a following API client (Admin Console -> Settings -> Channels -> API):
     * **API\_KEY** = oQt2BaunWNuainc8BvZpAm
@@ -23,7 +23,7 @@ Generating the SSO token from SSO key and given uservoice subdomain can be done 
 
     import uservoice
 
-    sso_token = uservoice.generate_sso_token('uservoice-subdomain', SSO_KEY, {
+    sso_token = uservoice.generate_sso_token(USERVOICE_SUBDOMAIN, SSO_KEY, {
         'guid': 1000000,
         'display_name': "User Name",
         'email': 'mailaddress@example.com'
@@ -41,7 +41,7 @@ Then just start making requests like the example below demonstrates.
     import uservoice
     import simplejson as json
 
-    oauth = uservoice.OAuth('uservoice-subdomain', API_KEY, API_SECRET)
+    oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET)
     users = json.load(oauth.request('get', "/api/v1/users.json"))
     for user_hash in users['users']:
         print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
@@ -57,7 +57,7 @@ user grants your site permission to access his or her data in his or her account
 
     CALLBACK_URL = 'http://localhost:3000/' # This represents the URL you want UserVoice send you back
 
-    oauth = uservoice.OAuth('uservoice-subdomain', API_KEY, API_SECRET, callback=CALLBACK_URL)
+    oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET, callback=CALLBACK_URL)
 
     print "1. Go to " + oauth.authorize_url() + " and click \"Allow access\"."
     print "2. Then type the oauth_verifier which is passed as a GET parameter to the callback URL:"
