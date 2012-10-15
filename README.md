@@ -29,9 +29,10 @@ sso_token = uservoice.generate_sso_token(USERVOICE_SUBDOMAIN, SSO_KEY, {
     'display_name': "User Name",
     'email': 'mailaddress@example.com'
 })
-```
 
 print "https://uservoice-subdomain.uservoice.com/?sso=" + sso_token
+```
+
 
 Making 2-Legged API calls
 -------------------------
