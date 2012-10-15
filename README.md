@@ -21,15 +21,17 @@ SSO-token generation using uservoice gem
 SSO-token can be used to create sessions for SSO users. They are capable of synchronizing the user information from one system to another.
 Generating the SSO token from SSO key and given uservoice subdomain can be done by calling UserVoice.generate\_sso\_token method like this:
 
-    import uservoice
+```python
+import uservoice
 
-    sso_token = uservoice.generate_sso_token(USERVOICE_SUBDOMAIN, SSO_KEY, {
-        'guid': 1000000,
-        'display_name': "User Name",
-        'email': 'mailaddress@example.com'
-    })
+sso_token = uservoice.generate_sso_token(USERVOICE_SUBDOMAIN, SSO_KEY, {
+    'guid': 1000000,
+    'display_name': "User Name",
+    'email': 'mailaddress@example.com'
+})
+```
 
-    print "https://uservoice-subdomain.uservoice.com/?sso=" + sso_token
+print "https://uservoice-subdomain.uservoice.com/?sso=" + sso_token
 
 Making 2-Legged API calls
 -------------------------
@@ -38,13 +40,15 @@ Managing backups and extracting all the users of a UserVoice subdomain are typic
 of the gem you just need to create an instance of UserVoice::Oauth (needs an API client, see Admin Console -> Settings -> Channels -> API).
 Then just start making requests like the example below demonstrates.
 
-    import uservoice
-    import simplejson as json
+```python
+import uservoice
+import simplejson as json
 
-    oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET)
-    users = json.load(oauth.request('get', "/api/v1/users.json"))
-    for user_hash in users['users']:
-        print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
+oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET)
+users = json.load(oauth.request('get', "/api/v1/users.json"))
+for user_hash in users['users']:
+    print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
+```
 
 Making 3-Legged API calls
 -------------------------
@@ -52,18 +56,20 @@ Making 3-Legged API calls
 If you want to make calls on behalf of a user, you need 3-legged API calls. It basically requires you to pass a link to UserVoice, where
 user grants your site permission to access his or her data in his or her account
 
-    import uservoice
-    import simplejson as json
+```python
+import uservoice
+import simplejson as json
 
-    CALLBACK_URL = 'http://localhost:3000/' # This represents the URL you want UserVoice send you back
+CALLBACK_URL = 'http://localhost:3000/' # This represents the URL you want UserVoice send you back
 
-    oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET, callback=CALLBACK_URL)
+oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET, callback=CALLBACK_URL)
 
-    print "1. Go to " + oauth.authorize_url() + " and click \"Allow access\"."
-    print "2. Then type the oauth_verifier which is passed as a GET parameter to the callback URL:"
+print "1. Go to " + oauth.authorize_url() + " and click \"Allow access\"."
+print "2. Then type the oauth_verifier which is passed as a GET parameter to the callback URL:"
 
-    oauth.get_access_token(verifier=raw_input().strip())
+oauth.get_access_token(verifier=raw_input().strip())
 
-    user = json.load(oauth.request('get', "/api/v1/users/current.json"))['user']
+user = json.load(oauth.request('get', "/api/v1/users/current.json"))['user']
 
-    print 'User: "' + user['name'] + '", Profile URL: ' + user['url']
+print 'User: "' + user['name'] + '", Profile URL: ' + user['url']
+```
