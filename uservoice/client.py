@@ -2,17 +2,21 @@ import operator
 import array
 import urllib
 import urllib2
+import simplejson as json
 from tweepy import oauth
-from sso import generate_sso_token
 
 class Client:
-    def __init__(self, subdomain_name, api_key, api_secret, callback=None, sso_key=None):
+    def __init__(self, subdomain_name, api_key, api_secret, callback=None, oauth_token='', oauth_token_secret=''):
         self.request_token = None
-        self.access_token = None
+        self.token = oauth_token
+        self.secret = oauth_token_secret
+        self.access_token = oauth.OAuthToken(self.token, self.secret)
+        self.default_headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' }
         self.api_url = "https://" + subdomain_name + ".uservoice.com"
+        self.api_key = api_key
+        self.api_secret = api_secret
         self.consumer = oauth.OAuthConsumer(api_key, api_secret)
         self.callback = callback
-        self.sso_key = sso_key
         self.subdomain_name = subdomain_name
 
     def get_request_token(self):
@@ -46,17 +50,45 @@ class Client:
         self.access_token = oauth.OAuthToken.from_string(resp.read())
         return self.access_token
 
+    def login_with_access_token(self, token, secret):
+        return Client(self.subdomain_name, self.api_key, self.api_secret, callback=self.callback, oauth_token=token, oauth_token_secret=secret)
+
     def request(self, method, path, params={}):
+        json_body = None
+        if method.upper() in ['POST', 'PUT']:
+            json_body = json.dumps(params)
+        method = method.upper()
         url = self.api_url + path
-        request = oauth.OAuthRequest.from_consumer_and_token(self.consumer, 
-            token=self.access_token,
-            http_method=method.upper(), http_url=url, parameters={})
+        request = oauth.OAuthRequest.from_consumer_and_token(self.consumer, token=self.access_token,
+            http_method=method, http_url=url, parameters={})
         request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), self.consumer, self.access_token)
 
-        return urllib2.urlopen(urllib2.Request(url, None, request.to_header()))
+        json_response = json.load(urllib2.urlopen(urllib2.Request(url, json_body, dict(request.to_header().items() + self.default_headers.items()))))
+        return json_response
+
+    # handy delegate methods
+    def get(self, path, params={}): return self.request('get', path, params)
+    def put(self, path, params={}): return self.request('put', path, params)
+    def post(self, path, params={}): return self.request('post', path, params)
+    def delete(self, path, params={}): return self.request('delete', path, params)
 
     def login_as(self, email):
-        generate_sso_token('','','')
-        return 0
+        resp = self.post('/api/v1/users/login_as', {
+            'request_token': self.get_request_token().key,
+            'user': { 'email': email }
+        })
+        if resp['token']:
+            token = resp['token']['oauth_token']
+            secret = resp['token']['oauth_token_secret']
+            return self.login_with_access_token(token, secret)
+
+    def login_as_owner(self):
+        resp = self.post('/api/v1/users/login_as_owner', {
+            'request_token': self.get_request_token().key
+        })
+        if resp['token']:
+            token = resp['token']['oauth_token']
+            secret = resp['token']['oauth_token_secret']
+            return self.login_with_access_token(token, secret)
 
 
