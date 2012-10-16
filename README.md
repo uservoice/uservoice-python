@@ -100,7 +100,7 @@ client = uservoice.Client(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET, callback=CAL
 print "1. Go to {url} and click \"Allow access\".".format(url=client.authorize_url())
 print "2. Then type the oauth_verifier which is passed as a GET parameter to the callback URL:"
 
-# In a web app we would get the oauth_verifier through a redirect from UserVoice (after a redirection back to CALLBACK_URL).
+# In a web app we would get the oauth_verifier through a redirect from UserVoice after a redirection to CALLBACK_URL.
 # In this command-line example we just read it from stdin:
 access_token = client.login_with_verifier(raw_input())
 
