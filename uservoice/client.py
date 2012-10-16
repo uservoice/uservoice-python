@@ -64,7 +64,6 @@ class Client:
         if method in ['POST', 'PUT']:
             json_body = json.dumps(params)
         url = self.api_url + path
-        print url
         request = oauth.OAuthRequest.from_consumer_and_token(self.consumer, token=self.access_token,
             http_method=method, http_url=url, parameters={})
         request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), self.consumer, self.access_token)

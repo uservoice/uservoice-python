@@ -52,10 +52,9 @@ try:
       print 'User: "{name}", Profile URL: {url}'.format(**user)
 
     # Now, let's login as mailaddress@example.com, a regular user
-    regular_access_token = client.login_as('mailaddress@example.com')
-
-    # Example request #1: Get current user.
-    user = regular_access_token.get("/api/v1/users/current")['user']
+    with client.login_as('mailaddress@example.com') as regular_access_token:
+        # Example request #1: Get current user.
+        user = regular_access_token.get("/api/v1/users/current")['user']
 
     print 'User: "{name}", Profile URL: {url}'.format(**user)
 
@@ -74,10 +73,12 @@ try:
 
     print 'Forum "{name}" created! URL: {url}'.format(**forum)
 except uservoice.Unauthorized as e:
-  # Thrown usually due to faulty tokens, untrusted client or if attempting
-  # operations without Admin Privileges
+    # Thrown usually due to faulty tokens, untrusted client or if attempting
+    # operations without Admin Privileges
+    print e
 except uservoice.NotFound as e:
-  # Thrown when attempting an operation to a resource that does not exist
+    # Thrown when attempting an operation to a resource that does not exist
+    print e
 ```
 
 Verifying a UserVoice user
