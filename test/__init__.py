@@ -58,6 +58,16 @@ class UserVoiceTestCase(unittest.TestCase):
 
         self.assertRaises(uservoice.Unauthorized, func)
 
+    def test_should_get_access_token_as_owner(self):
+        with self.client.login_as_owner() as owner:
+          self.assertTrue(owner.get("/api/v1/users/current.json")['user']['roles']['owner'])
+          with owner.login_as('regular@example.com') as regular:
+              self.assertTrue(owner.get("/api/v1/users/current.json")['user']['roles']['owner'])
+              self.user = regular.get("/api/v1/users/current.json")['user']
+              self.assertFalse(self.user['roles']['owner'])
+        self.assertEqual(self.user['email'], 'regular@example.com')
+
+
     def test_should_generate_not_found_on_unexistant_endpoint(self):
         def func():
             result = self.client.get("/api/v1/lanterns/1")

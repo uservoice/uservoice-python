@@ -108,4 +108,10 @@ class Client:
             secret = resp['token']['oauth_token_secret']
             return self.login_with_access_token(token, secret)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
+
 
