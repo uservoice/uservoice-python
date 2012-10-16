@@ -15,8 +15,8 @@ Prerequisites:
     * **API\_KEY** = oQt2BaunWNuainc8BvZpAm
     * **API\_SECRET** = 3yQMSoXBpAwuK3nYHR0wpY6opE341inL9a2HynGF2
 
-SSO-token generation using uservoice gem
-----------------------------------------
+SSO-token generation using the uservoice python library
+-------------------------------------------------------
 
 SSO-token can be used to create sessions for SSO users. They are capable of synchronizing the user information from one system to another.
 Generating the SSO token from SSO key and given uservoice subdomain can be done by calling UserVoice.generate\_sso\_token method like this:
@@ -34,43 +34,76 @@ print "https://uservoice-subdomain.uservoice.com/?sso=" + sso_token
 ```
 
 
-Making 2-Legged API calls
--------------------------
+Making API calls
+----------------
 
-Managing backups and extracting all the users of a UserVoice subdomain are typical use cases for making 2-legged API calls. With the help
-of the gem you just need to create an instance of UserVoice::Oauth (needs an API client, see Admin Console -> Settings -> Channels -> API).
-Then just start making requests like the example below demonstrates.
+With the gem you need to create an instance of uservoice.Client. You get
+API_KEY and API_SECRET from an API client which you can create in Admin Console
+-> Settings -> Channels -> API.
 
 ```python
 import uservoice
-import simplejson as json
+try:
+    client = uservoice.Client(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET)
 
-oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET)
-users = json.load(oauth.request('get', "/api/v1/users.json"))
-for user_hash in users['users']:
-    print 'User: "' + user_hash['name'] + '", Profile URL: ' + user_hash['url']
+    # Get users of a subdomain (requires trusted client, but no user)
+    users = client.get("/api/v1/users")['users']
+    for user in users:
+      print 'User: "{name}", Profile URL: {url}'.format(**user)
+
+    # Now, let's login as mailaddress@example.com, a regular user
+    regular_access_token = client.login_as('mailaddress@example.com')
+
+    # Example request #1: Get current user.
+    user = regular_access_token.get("/api/v1/users/current")['user']
+
+    print 'User: "{name}", Profile URL: {url}'.format(**user)
+
+    # Login as account owner
+    owner_access_token = client.login_as_owner()
+
+    # Example request #2: Create a new private forum limited to only example.com email domain.
+    forum = owner_access_token.post("/api/v1/forums", {
+        'forum': {
+            'name': 'Example.com Private Feedback',
+            'private': True,
+            'allow_by_email_domain': True,
+            'allowed_email_domains': [{'domain': 'example.com'}]
+        }
+     })['forum']
+
+    print 'Forum "{name}" created! URL: {url}'.format(**forum)
+except uservoice.Unauthorized as e:
+  # Thrown usually due to faulty tokens, untrusted client or if attempting
+  # operations without Admin Privileges
+except uservoice.NotFound as e:
+  # Thrown when attempting an operation to a resource that does not exist
 ```
 
-Making 3-Legged API calls
--------------------------
+Verifying a UserVoice user
+--------------------------
 
-If you want to make calls on behalf of a user, you need 3-legged API calls. It basically requires you to pass a link to UserVoice, where
-user grants your site permission to access his or her data in his or her account
+If you want to make calls on behalf of a user, but want to make sure he or she
+actually owns certain email address in UserVoice, you need to use 3-Legged API
+calls. Just pass your user an authorize link to click, so that user may grant
+your site permission to access his or her data in UserVoice.
 
 ```python
 import uservoice
-import simplejson as json
+CALLBACK_URL = 'http://localhost:3000/' # your site
 
-CALLBACK_URL = 'http://localhost:3000/' # This represents the URL you want UserVoice send you back
+client = uservoice.Client(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET, callback=CALLBACK_URL)
 
-oauth = uservoice.OAuth(USERVOICE_SUBDOMAIN, API_KEY, API_SECRET, callback=CALLBACK_URL)
-
-print "1. Go to " + oauth.authorize_url() + " and click \"Allow access\"."
+# At this point you want to print/redirect to client.authorize_url in your application.
+# Here we just output them as this is a command-line example.
+print "1. Go to {url} and click \"Allow access\".".format(url=client.authorize_url())
 print "2. Then type the oauth_verifier which is passed as a GET parameter to the callback URL:"
 
-oauth.get_access_token(verifier=raw_input().strip())
+# In a web app we would get the oauth_verifier through a redirect from UserVoice (after a redirection back to CALLBACK_URL).
+# In this command-line example we just read it from stdin:
+access_token = client.login_with_verifier(raw_input())
 
-user = json.load(oauth.request('get', "/api/v1/users/current.json"))['user']
-
-print 'User: "' + user['name'] + '", Profile URL: ' + user['url']
+# All done. Now we can read the current user to know user's email address:
+user = access_token.get("/api/v1/users/current")['user']
+print "User logged in, Name: {name}, email: {email}".format(**user)
 ```

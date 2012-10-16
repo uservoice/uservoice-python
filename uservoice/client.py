@@ -41,7 +41,7 @@ class Client:
         )
         return request.to_url()
 
-    def get_access_token(self, verifier=None):
+    def login_with_verifier(self, verifier=None):
         url = self.api_url + '/oauth/access_token'
 
         request = oauth.OAuthRequest.from_consumer_and_token(
@@ -52,18 +52,19 @@ class Client:
         request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), self.consumer, self.request_token)
 
         resp = urllib2.urlopen(urllib2.Request(url, headers=request.to_header()))
-        self.access_token = oauth.OAuthToken.from_string(resp.read())
-        return self.access_token
+        token = oauth.OAuthToken.from_string(resp.read())
+        return self.login_with_access_token(token.key, token.secret)
 
     def login_with_access_token(self, token, secret):
         return Client(self.subdomain_name, self.api_key, self.api_secret, callback=self.callback, oauth_token=token, oauth_token_secret=secret)
 
     def request(self, method, path, params={}):
         json_body = None
-        if method.upper() in ['POST', 'PUT']:
-            json_body = json.dumps(params)
         method = method.upper()
+        if method in ['POST', 'PUT']:
+            json_body = json.dumps(params)
         url = self.api_url + path
+        print url
         request = oauth.OAuthRequest.from_consumer_and_token(self.consumer, token=self.access_token,
             http_method=method, http_url=url, parameters={})
         request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), self.consumer, self.access_token)
