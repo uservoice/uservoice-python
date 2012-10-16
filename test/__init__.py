@@ -42,6 +42,33 @@ class UserVoiceTestCase(unittest.TestCase):
         self.assertFalse(user['roles']['owner'])
         self.assertEqual(user['email'], 'someguy@example.com')
 
+    def test_should_not_create_KB_article_as_regular_user(self):
+        nobody = self.client.login_as('regular_user@example.com')
+
+        def func():
+            result = nobody.post("/api/v1/articles.json", {
+                'article': { 'title': 'good morning' }
+            })
+
+        self.assertRaises(uservoice.Unauthorized, func)
+
+    def test_should_not_get_current_user_as_nobody(self):
+        def func():
+            result = self.client.get("/api/v1/users/current")
+
+        self.assertRaises(uservoice.Unauthorized, func)
+
+    def test_should_generate_not_found_on_unexistant_endpoint(self):
+        def func():
+            result = self.client.get("/api/v1/lanterns/1")
+
+        self.assertRaises(uservoice.NotFound, func)
+
+    def test_should_not_get_unexistant_user(self):
+        def func():
+            self.client.get("/api/v1/users/86723562378523")
+
+        self.assertRaises(uservoice.NotFound, func)
 
 if __name__ == '__main__':
     unittest.main()

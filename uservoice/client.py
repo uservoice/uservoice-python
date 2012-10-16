@@ -5,6 +5,11 @@ import urllib2
 import simplejson as json
 from tweepy import oauth
 
+class APIError(RuntimeError): pass
+class Unauthorized(APIError): pass
+class NotFound(APIError): pass
+class ApplicationError(APIError): pass
+
 class Client:
     def __init__(self, subdomain_name, api_key, api_secret, callback=None, oauth_token='', oauth_token_secret=''):
         self.request_token = None
@@ -63,8 +68,20 @@ class Client:
             http_method=method, http_url=url, parameters={})
         request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), self.consumer, self.access_token)
 
-        json_response = json.load(urllib2.urlopen(urllib2.Request(url, json_body, dict(request.to_header().items() + self.default_headers.items()))))
-        return json_response
+        json_response = None
+        try:
+            attrs = json.load(urllib2.urlopen(urllib2.Request(url, json_body, dict(request.to_header().items() + self.default_headers.items()))))
+            return attrs
+        except urllib2.HTTPError as http_error:
+            if http_error.code == 401:
+                raise Unauthorized(http_error)
+            elif http_error.code == 404:
+                raise NotFound(http_error)
+            elif http_error.code == 500:
+                raise ApplicationError(http_error)
+            else:
+                raise APIError(http_error)
+
 
     # handy delegate methods
     def get(self, path, params={}): return self.request('get', path, params)
