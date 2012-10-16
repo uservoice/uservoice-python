@@ -11,7 +11,7 @@ setup(name='uservoice',
       description='UserVoice Python library',
       author='Raimo Tuisku',
       author_email='dev@uservoice.com',
-      url='http://uservoicetripe.com/',
+      url='http://developer.uservoice.com/',
       packages=['uservoice'],
       install_requires=[
           'simplejson',
