@@ -30,7 +30,7 @@ sso_token = uservoice.generate_sso_token(USERVOICE_SUBDOMAIN, SSO_KEY, {
     'email': 'mailaddress@example.com'
 })
 
-print "https://uservoice-subdomain.uservoice.com/?sso=" + sso_token
+print "https://" + USERVOICE_SUBDOMAIN + ".uservoice.com/?sso=" + sso_token
 ```
 
 
