@@ -3,6 +3,7 @@ import array
 import urllib
 import urllib2
 import simplejson as json
+import uservoice
 from tweepy import oauth
 
 class APIError(RuntimeError): pass
@@ -88,6 +89,9 @@ class Client:
     def put(self, path, params={}): return self.request('put', path, params)
     def post(self, path, params={}): return self.request('post', path, params)
     def delete(self, path, params={}): return self.request('delete', path, params)
+
+    def get_collection(self, path, limit=None):
+        return uservoice.Collection(self, path, limit=limit)
 
     def login_as(self, email):
         resp = self.post('/api/v1/users/login_as', {

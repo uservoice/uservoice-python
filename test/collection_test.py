@@ -29,7 +29,7 @@ class CollectionTest(unittest.TestCase):
                 page = int(path[len(path) - 1])
                 page_first_index = uservoice.PER_PAGE * (page - 1) + 1
                 page_last_index = min(uservoice.PER_PAGE * page, ELEMENTS)
-                if "/api/v1/suggestions?per_page=" + str(uservoice.PER_PAGE) + "&page=" in path:
+                if "/api/v1/suggestions?per_page=" in path:
                     suggestions = []
                     for idea_index in range(page_first_index, page_last_index+1):
                         suggestions.append({
@@ -100,4 +100,20 @@ class CollectionTest(unittest.TestCase):
     def test_limited_size_with_paged_client_and_limit(self):
         collection = uservoice.Collection(self.pagedClient, '/api/v1/suggestions', limit=1001)
         self.assertEqual(len(collection), 1001)
+
+    def test_limited_size_with_paged_client_and_limit(self):
+        collection = uservoice.Collection(self.pagedClient, '/api/v1/suggestions', limit=1001)
+        def func():
+            collection[1001]
+        self.assertRaises(IndexError, func)
+
+    def test_accessing_out_of_bounds_element_in_first_page_with_really_small_limited_size_with_paged_client(self):
+        collection = uservoice.Collection(self.pagedClient, '/api/v1/suggestions', limit=2)
+        def func():
+            collection[2]
+        self.assertRaises(IndexError, func)
+
+    def test_accessing_element_in_first_page_with_really_small_limited_size_with_paged_client(self):
+        collection = uservoice.Collection(self.pagedClient, '/api/v1/suggestions', limit=2)
+        self.assertEqual(collection[1]['id'], 2)
 

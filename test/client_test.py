@@ -2,7 +2,7 @@ import yaml
 import unittest
 import uservoice
 
-class ClientTest:#(unittest.TestCase):
+class ClientTest(unittest.TestCase):
     def setUp(self):
         super(ClientTest, self).setUp()
         with open('test/config.yml') as f:
@@ -74,3 +74,17 @@ class ClientTest:#(unittest.TestCase):
             self.client.get("/api/v1/users/86723562378523")
 
         self.assertRaises(uservoice.NotFound, func)
+
+    def test_should_get_reasonable_collection_using_collection_class(self):
+        suggestions = self.client.get_collection("/api/v1/suggestions")
+        count = 0
+        for suggestion in suggestions:
+            count += 1
+        self.assertEqual(count, len(suggestions))
+
+    def test_should_get_reasonable_collection_using_collection_class(self):
+        suggestions = self.client.get_collection("/api/v1/suggestions", limit=1)
+        count = 0
+        for suggestion in suggestions:
+            count += 1
+        self.assertEqual(len(suggestions), 1)
