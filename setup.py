@@ -12,7 +12,6 @@ setup(name='uservoice',
       long_description=open('README').read(),
       author='Raimo Tuisku',
       author_email='dev@uservoice.com',
-      url='http://developer.uservoice.com/',
       packages=['uservoice'],
       install_requires=[
           'simplejson',
