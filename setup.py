@@ -18,6 +18,6 @@ setup(name='uservoice',
           'pycrypto',
           'pytz',
           'PyYAML',
-          'tweepy'],
+          'requests-oauth'],
       test_suite='test',
 )
