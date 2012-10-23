@@ -88,3 +88,7 @@ class ClientTest(unittest.TestCase):
         for suggestion in suggestions:
             count += 1
         self.assertEqual(len(suggestions), 1)
+
+    def test_should_get_page_of_tickets(self):
+        tickets = self.client.get("/api/v1/tickets?per_page=2")
+        self.assertEqual(len(tickets), 2)
