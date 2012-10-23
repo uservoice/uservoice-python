@@ -14,7 +14,7 @@ class NotFound(APIError): pass
 class ApplicationError(APIError): pass
 
 class Client:
-    def __init__(self, subdomain_name, api_key, api_secret, callback=None, oauth_token='', oauth_token_secret=''):
+    def __init__(self, subdomain_name, api_key, api_secret, oauth_token='', oauth_token_secret='', callback=None):
         self.request_token = None
         self.token = oauth_token
         self.secret = oauth_token_secret
@@ -26,27 +26,31 @@ class Client:
         self.callback = callback
         self.subdomain_name = subdomain_name
 
-    def get_request_token(self):
+    def get_request_token(self, callback=None):
         url = self.api_url + '/oauth/request_token'
-        resp = requests.post(url, hooks={'pre_request': OAuthHook('', '', self.api_key, self.api_secret, True)})
+        body = {}
+        if self.callback or callback:
+            body['oauth_callback'] = self.callback or callback
+        resp = requests.post(url, body, hooks={'pre_request': OAuthHook('', '', self.api_key, self.api_secret, True)})
         token = parse_qs(resp.text)
         if not 'oauth_token' in token or not 'oauth_token_secret' in token:
             raise Unauthorized('Failed to get request token')
-        return self.login_with_access_token(token['oauth_token'], token['oauth_token_secret'])
+        return self.login_with_access_token(token['oauth_token'][0], token['oauth_token_secret'][0])
 
     def authorize_url(self):
         self.request_token = self.get_request_token()
-        url = self.api_url + '/oauth/authorize'+self.request_token.token
-        return request.to_url()
+        url = self.api_url + '/oauth/authorize?oauth_token=' + self.request_token.token
+        return url
 
     def login_with_verifier(self, verifier=None):
         url = self.api_url + '/oauth/access_token'
-        resp = self.request_token.post(url, {'oauth_verifier': str(verifier)})
-        token = parse_qs(resp.content)
-        return self.login_with_access_token(token['oauth_token'], token['oauth_token_secret'])
+        resp = requests.post(url, { 'oauth_verifier': verifier}, hooks={
+            'pre_request': OAuthHook(self.request_token.token, self.request_token.secret, self.api_key, self.api_secret, True)})
+        token = parse_qs(resp.text)
+        return self.login_with_access_token(token['oauth_token'][0], token['oauth_token_secret'][0])
 
     def login_with_access_token(self, token, secret):
-        return Client(self.subdomain_name, self.api_key, self.api_secret, callback=self.callback, oauth_token=token, oauth_token_secret=secret)
+        return Client(self.subdomain_name, self.api_key, self.api_secret, oauth_token=token, oauth_token_secret=secret, callback=self.callback)
 
     def request(self, method, path, params={}):
         json_body = None
