@@ -9,7 +9,7 @@ except ImportError:
 setup(name='uservoice',
       version='v0.0.2',
       description='UserVoice Python library',
-      long_description=open('README.md').read(),
+      long_description=re.sub(r'```[^\s]*', '', open('README.md').read()),
       author='Raimo Tuisku',
       author_email='dev@uservoice.com',
       packages=['uservoice'],
