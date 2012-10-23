@@ -4,7 +4,7 @@ import hashlib
 import datetime
 import urllib
 import pytz
-from array import array
+import array
 import operator
 import simplejson as json
 
