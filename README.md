@@ -9,22 +9,23 @@ Installation
 ============
 
 Use pip to install the uservoice Python module:
-
 ```sh
 pip install uservoice
 ```
-
 Now you should be good to go!
 
 Examples
 ========
 
-Prerequisites:
-* Suppose your UserVoice site is at http://uservoice-subdomain.uservoice.com/ and **USERVOICE\_SUBDOMAIN** = uservoice-subdomain
-* **SSO\_KEY** = 982c88f2df72572859e8e23423eg87ed (Admin Console -> Settings -> General -> User Authentication)
-* The account has a following API client (Admin Console -> Settings -> Channels -> API):
-    * **API\_KEY** = oQt2BaunWNuainc8BvZpAm
-    * **API\_SECRET** = 3yQMSoXBpAwuK3nYHR0wpY6opE341inL9a2HynGF2
+Suppose your UserVoice site is at http://uservoice-subdomain.uservoice.com/
+```
+USERVOICE_SUBDOMAIN = uservoice-subdomain
+SSO_KEY = 982c88f2df72572859e8e23423eg87ed (Admin Console -> Settings -> General -> User Authentication)
+
+API client (Admin Console -> Settings -> Channels -> API):
+API_KEY = oQt2BaunWNuainc8BvZpAm
+API_SECRET = 3yQMSoXBpAwuK3nYHR0wpY6opE341inL9a2HynGF2
+```
 
 SSO-token generation using the uservoice python library
 -------------------------------------------------------
