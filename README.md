@@ -8,12 +8,13 @@ This library allows you to easily:
 Installation
 ============
 
-You pip to install uservoice:
+Use pip to install the uservoice Python module:
 
 ```sh
 pip install uservoice
 ```
 
+Now you should be good to go!
 
 Examples
 ========
