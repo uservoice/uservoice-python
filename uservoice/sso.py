@@ -4,6 +4,8 @@ import hashlib
 import datetime
 import urllib
 import pytz
+import array
+import operator
 import simplejson as json
 
 def generate_sso_token(subdomain_name, sso_key, user_attributes):
