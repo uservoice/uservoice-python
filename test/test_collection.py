@@ -3,9 +3,9 @@ import unittest
 import uservoice
 
 ELEMENTS = 1501
-class CollectionTest(unittest.TestCase):
+class TestCollection(unittest.TestCase):
     def setUp(self):
-        super(CollectionTest, self).setUp()
+        super(TestCollection, self).setUp()
         with open('test/config.yml') as f:
             self.config = yaml.load(f)
         class MockClient:

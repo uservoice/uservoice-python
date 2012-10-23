@@ -2,9 +2,9 @@ import yaml
 import unittest
 import uservoice
 
-class ClientTest(unittest.TestCase):
+class TestClient(unittest.TestCase):
     def setUp(self):
-        super(ClientTest, self).setUp()
+        super(TestClient, self).setUp()
         with open('test/config.yml') as f:
             self.config = yaml.load(f)
         self.client = uservoice.Client(self.config['subdomain_name'],
