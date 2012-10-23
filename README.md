@@ -62,7 +62,7 @@ try:
     # Get users of a subdomain (requires trusted client, but no user)
     users = client.get("/api/v1/users")['users']
     for user in users:
-      print 'User: "{name}", Profile URL: {url}'.format(**user)
+        print 'User: "{name}", Profile URL: {url}'.format(**user)
 
     # Now, let's login as mailaddress@example.com, a regular user
     with client.login_as('mailaddress@example.com') as regular_access_token:
