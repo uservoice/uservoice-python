@@ -119,7 +119,19 @@ print "2. Then type the oauth_verifier which is passed as a GET parameter to the
 # In this command-line example we just read it from stdin:
 access_token = client.login_with_verifier(raw_input())
 
-# All done. Now we can read the current user to know user's email address:
+# All done. Now we can read the current user's email address:
 user = access_token.get("/api/v1/users/current")['user']
 print "User logged in, Name: {name}, email: {email}".format(**user)
+
+# To reuse the access token at a later point, store the token and secret. For example:
+# 1. Find user (in Django)
+u = User.objects.get(email=user['email'])
+# 2. Associate token and secret with the user
+u.access_tokens.create(system='uservoice', token=access_token.token, secret=access_token.secret)
+
+# When you need the token again:
+# 1. Find token of the current user
+token = u.access_tokens.get(system='uservoice')
+# 2. Use the token and secret to log in
+access_token = client.login_with_access_token(token.token, token.secret)
 ```
