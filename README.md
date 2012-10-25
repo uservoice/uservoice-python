@@ -26,7 +26,7 @@ Prerequisites:
 ```python
 # Suppose your UserVoice site is at http://uservoice-subdomain.uservoice.com/
 USERVOICE_SUBDOMAIN = 'uservoice-subdomain'
-SSO_KEY = '982c88f2df72572859e8e23423eg87ed' # Admin Console -> Settings -> General -> User Authentication
+SSO_KEY = '982c88f2df7257859e8e23423eg87ed' # Admin Console: Settings -> General -> User Authentication
 
 # Define an API client at: Admin Console -> Settings -> Channels -> API
 API_KEY = 'oQt2BaunWNuainc8BvZpAm'
@@ -46,7 +46,7 @@ sso_token = uservoice.generate_sso_token(USERVOICE_SUBDOMAIN, SSO_KEY, {
     'guid': 1000000,
     'display_name': "User Name",
     'email': 'mailaddress@example.com'
-}), 5*60) # the token will be valid for 5 minutes (5*60 seconds) by default
+}, 5*60) # the token will be valid for 5 minutes (5*60 seconds) by default
 
 print "https://" + USERVOICE_SUBDOMAIN + ".uservoice.com/?sso=" + sso_token
 ```
@@ -66,7 +66,8 @@ try:
     # Get users of a subdomain (requires trusted client, but no user)
     users = client.get_collection("/api/v1/users")
 
-    print "Subdomain \"{subdomain}\" has {total} users".format(subdomain=USERVOICE_SUBDOMAIN, total=len(users))
+    print "Subdomain \"{subdomain}\" has {total} users".format(subdomain=USERVOICE_SUBDOMAIN,
+                                                               total=len(users))
     for user in users:
         print 'User: "{name}", Profile URL: {url}'.format(**user)
 
