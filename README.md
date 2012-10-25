@@ -8,9 +8,14 @@ This library allows you to easily:
 Installation
 ============
 
-Use pip to install the uservoice Python module:
+Install the uservoice Python module from PyPI:
 ```sh
 pip install uservoice
+```
+or get the source from (http://pypi.python.org/pypi/uservoice) and use the setup.py method:
+
+```sh
+python setup.py install
 ```
 Now you should be good to go!
 
