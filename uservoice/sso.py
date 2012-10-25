@@ -8,8 +8,8 @@ import array
 import operator
 import simplejson as json
 
-def generate_sso_token(subdomain_name, sso_key, user_attributes):
-    current_time = (datetime.datetime.now(pytz.utc) + datetime.timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
+def generate_sso_token(subdomain_name, sso_key, user_attributes, valid_for = 300):
+    current_time = (datetime.datetime.now(pytz.utc) + datetime.timedelta(seconds=valid_for)).strftime('%Y-%m-%d %H:%M:%S')
     user_attributes.setdefault('expires', current_time)
     user_json = json.dumps(user_attributes, separators=(',',':'))
     iv = "OpenSSL for Ruby"
