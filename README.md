@@ -50,9 +50,8 @@ print "https://" + USERVOICE_SUBDOMAIN + ".uservoice.com/?sso=" + sso_token
 Making API calls
 ----------------
 
-With the gem you need to create an instance of uservoice.Client. You get
-API_KEY and API_SECRET from an API client which you can create in Admin Console
--> Settings -> Channels -> API.
+You need to create an instance of uservoice.Client. Get API_KEY and API_SECRET for an API client which you can create from 
+Admin Console. Go to Settings -> Channels -> API.
 
 ```python
 import uservoice
