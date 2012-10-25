@@ -21,7 +21,7 @@ Prerequisites:
 ```python
 # Suppose your UserVoice site is at http://uservoice-subdomain.uservoice.com/
 USERVOICE_SUBDOMAIN = 'uservoice-subdomain'
-SSO_KEY = '982c88f2df72572859e8e23423eg87ed' # Admin Console -> Settings -> General -> User Authentication
+SSO_KEY = '982c88f2df72572859e8e23423eg87ed' # Admin Console: Settings -> General -> User Authentication
 
 # Define an API client at: Admin Console -> Settings -> Channels -> API
 API_KEY = 'oQt2BaunWNuainc8BvZpAm'
