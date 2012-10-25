@@ -61,7 +61,8 @@ try:
     # Get users of a subdomain (requires trusted client, but no user)
     users = client.get_collection("/api/v1/users")
 
-    print "Subdomain \"{subdomain}\" has {total} users".format(subdomain=USERVOICE_SUBDOMAIN, total=len(users))
+    print "Subdomain \"{subdomain}\" has {total} users".format(subdomain=USERVOICE_SUBDOMAIN,
+                                                               total=len(users))
     for user in users:
         print 'User: "{name}", Profile URL: {url}'.format(**user)
 
