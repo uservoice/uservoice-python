@@ -79,7 +79,7 @@ try:
     # Example request #2: Create a new private forum limited to only example.com email domain.
     forum = owner_access_token.post("/api/v1/forums", {
         'forum': {
-            'name': 'Example.com Private Feedback',
+            'name': 'Python Client Private Feedback',
             'private': True,
             'allow_by_email_domain': True,
             'allowed_email_domains': [{'domain': 'example.com'}]
