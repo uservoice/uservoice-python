@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+from uservoice import info
 
 try:
     from setuptools import setup
@@ -8,7 +9,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='uservoice',
-      version='v0.0.11',
+      version=info.version,
       description='UserVoice Python library',
       url = 'http://pypi.python.org/pypi/uservoice/',
       long_description=re.sub(r'```[^\s]*', '', open('README.md').read()),
