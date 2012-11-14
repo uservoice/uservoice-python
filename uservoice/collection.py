@@ -1,4 +1,4 @@
-PER_PAGE = 500
+PER_PAGE = 100
 class Collection:
     def __init__(self, client, query, limit=2**60):
         self.client = client
