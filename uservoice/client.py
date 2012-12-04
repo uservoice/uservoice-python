@@ -37,7 +37,7 @@ class Client:
         url = self.api_url + '/oauth/request_token'
         body = {}
         if self.callback or callback:
-            body['oauth_callback'] = self.callback or callback
+            body['oauth_callback'] = callback or self.callback
         resp = requests.post(url, body, headers=self.default_headers, hooks={'pre_request': OAuthHook('', '', self.api_key, self.api_secret, True)})
         token = parse_qs(resp.text)
         if not 'oauth_token' in token or not 'oauth_token_secret' in token:

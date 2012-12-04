@@ -13,5 +13,5 @@ class TestSso(unittest.TestCase):
             'email': 'myemail@example.com',
             'guid': 'code-myemail@example.com-1'
         }, 10)
-        print "http://{subdomain}.uservoice.com?sso={sso}".format(subdomain=self.config['subdomain_name'],sso=sso_token)
+        print "{protocol}://{subdomain}.{domain}?sso={sso}".format(protocol=self.config.get('protocol', 'https'),domain=self.config.get('uservoice_domain', 'uservoice.com'),subdomain=self.config['subdomain_name'],sso=sso_token)
         self.assertTrue(len(sso_token) > 10)

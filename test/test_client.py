@@ -10,8 +10,8 @@ class TestClient(unittest.TestCase):
         self.client = uservoice.Client(self.config['subdomain_name'],
                                        self.config['api_key'],
                                        self.config['api_secret'],
-                                       protocol=self.config['protocol'],
-                                       uservoice_domain=self.config['uservoice_domain'])
+                                       protocol=self.config.get('protocol'),
+                                       uservoice_domain=self.config.get('uservoice_domain'))
     def test_getting_first_10_users(self):
         users = self.client.get("/api/v1/users")['users']
         self.assertEqual(len(users), 10)
@@ -33,8 +33,8 @@ class TestClient(unittest.TestCase):
         new_client = uservoice.Client(self.config['subdomain_name'],
                                       self.config['api_key'],
                                       self.config['api_secret'],
-                                      protocol=self.config['protocol'],
-                                      uservoice_domain=self.config['uservoice_domain'])
+                                      protocol=self.config.get('protocol'),
+                                      uservoice_domain=self.config.get('uservoice_domain'))
         reloaded_token = new_client.login_with_access_token(old_client.token, old_client.secret)
 
         user = reloaded_token.get("/api/v1/users/current.json")['user']
