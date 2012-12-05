@@ -15,12 +15,15 @@ class NotFound(APIError): pass
 class ApplicationError(APIError): pass
 
 class Client:
-    def __init__(self, subdomain_name, api_key, api_secret, oauth_token='', oauth_token_secret='', callback=None, protocol=None, uservoice_domain=None):
+    def __init__(self, subdomain_name, api_key, api_secret=None, oauth_token='', oauth_token_secret='', callback=None, protocol=None, uservoice_domain=None):
         self.request_token = None
         self.token = oauth_token
         self.secret = oauth_token_secret
         self.default_headers = { 'Content-Type': 'application/json', 'Accept': 'application/json',  'API-Client': 'uservoice-python-' + info.version }
-        self.access_token = requests.session(headers=self.default_headers, hooks={'pre_request': OAuthHook(self.token, self.secret, api_key, api_secret, True) })
+        oauth_hooks = {}
+        if api_secret:
+            oauth_hooks = {'pre_request': OAuthHook(self.token, self.secret, api_key, api_secret, True) }
+        self.access_token = requests.session(headers=self.default_headers, hooks=oauth_hooks)
         self.api_url = "{protocol}://{subdomain_name}.{uservoice_domain}".format(
                            subdomain_name=subdomain_name,
                            protocol=(protocol or 'https'),
@@ -67,6 +70,11 @@ class Client:
         method = method.upper()
 
         url = self.api_url + path
+        if self.api_secret == None:
+            if '?' in url:
+                url += '&client=' + self.api_key
+            else:
+                url += '?client=' + self.api_key
         json_resp = None
         if method == 'POST':
             json_resp = self.access_token.post(url, json.dumps(params))

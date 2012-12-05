@@ -12,6 +12,14 @@ class TestClient(unittest.TestCase):
                                        self.config['api_secret'],
                                        protocol=self.config.get('protocol'),
                                        uservoice_domain=self.config.get('uservoice_domain'))
+    def test_getting_first_non_private_forum_as_unsigned_client(self):
+        client = uservoice.Client(self.config['subdomain_name'],
+                                  self.config['api_key'],
+                                  protocol=self.config.get('protocol'),
+                                  uservoice_domain=self.config.get('uservoice_domain'))
+        first_forum = client.get_collection('/api/v1/forums', limit=1)[0]
+        self.assertFalse(first_forum['private'])
+
     def test_getting_first_10_users(self):
         users = self.client.get("/api/v1/users")['users']
         self.assertEqual(len(users), 10)
