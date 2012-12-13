@@ -8,7 +8,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='uservoice',
-      version='0.0.14',
+      version='0.0.15',
       description='UserVoice Python library',
       url = 'http://pypi.python.org/pypi/uservoice/',
       long_description=re.sub(r'```[^\s]*', '', open('README.md').read()),
