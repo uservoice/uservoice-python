@@ -7,7 +7,7 @@ import uservoice
 from oauth_hook import OAuthHook
 from urlparse import parse_qs
 import requests
-import info
+version='0.0.14'
 
 class APIError(RuntimeError): pass
 class Unauthorized(APIError): pass
@@ -19,7 +19,7 @@ class Client:
         self.request_token = None
         self.token = oauth_token
         self.secret = oauth_token_secret
-        self.default_headers = { 'Content-Type': 'application/json', 'Accept': 'application/json',  'API-Client': 'uservoice-python-' + info.version }
+        self.default_headers = { 'Content-Type': 'application/json', 'Accept': 'application/json',  'API-Client': 'uservoice-python-' + version }
         oauth_hooks = {}
         if api_secret:
             oauth_hooks = {'pre_request': OAuthHook(self.token, self.secret, api_key, api_secret, True) }
