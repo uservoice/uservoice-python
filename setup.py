@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-from uservoice import info
+import info
 
 try:
     from setuptools import setup
