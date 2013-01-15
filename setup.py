@@ -20,7 +20,7 @@ setup(name='uservoice',
           'pycrypto',
           'pytz',
           'PyYAML',
-          'requests==0.14.2',
+          'requests<=0.14.2',
           'requests-oauth'],
       test_suite='test',
 )
