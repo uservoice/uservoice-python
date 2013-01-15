@@ -7,7 +7,7 @@ import uservoice
 from oauth_hook import OAuthHook
 from urlparse import parse_qs
 import requests
-version='0.0.15'
+version='0.0.16'
 
 class APIError(RuntimeError): pass
 class Unauthorized(APIError): pass
