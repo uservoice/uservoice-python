@@ -4,10 +4,10 @@ import urllib
 import urllib2
 import simplejson as json
 import uservoice
-from oauth_hook import OAuthHook
+from requests_oauthlib import OAuth1
 from urlparse import parse_qs
 import requests
-version='0.0.17'
+version='0.0.19'
 
 class APIError(RuntimeError): pass
 class Unauthorized(APIError): pass
@@ -22,8 +22,7 @@ class Client:
         self.default_headers = { 'Content-Type': 'application/json', 'Accept': 'application/json',  'API-Client': 'uservoice-python-' + version }
         oauth_hooks = {}
         if api_secret:
-            oauth_hooks = {'pre_request': OAuthHook(self.token, self.secret, api_key, api_secret, True) }
-        self.access_token = requests.session(headers=self.default_headers, hooks=oauth_hooks)
+            self.oauth = OAuth1(api_key, api_secret, resource_owner_key=self.token, resource_owner_secret=self.secret, callback_uri=callback)
         self.api_url = "{protocol}://{subdomain_name}.{uservoice_domain}".format(
                            subdomain_name=subdomain_name,
                            protocol=(protocol or 'https'),
@@ -41,7 +40,8 @@ class Client:
         body = {}
         if self.callback or callback:
             body['oauth_callback'] = callback or self.callback
-        resp = requests.post(url, body, headers=self.default_headers, hooks={'pre_request': OAuthHook('', '', self.api_key, self.api_secret, True)})
+        oauth = OAuth1(self.api_key, self.api_secret, callback_uri=self.callback)
+        resp = requests.post(url, body, headers=self.default_headers, auth=oauth)
         token = parse_qs(resp.text)
         if not 'oauth_token' in token or not 'oauth_token_secret' in token:
             raise Unauthorized('Failed to get request token')
@@ -54,8 +54,8 @@ class Client:
 
     def login_with_verifier(self, verifier=None):
         url = self.api_url + '/oauth/access_token'
-        resp = requests.post(url, { 'oauth_verifier': verifier}, hooks={
-            'pre_request': OAuthHook(self.request_token.token, self.request_token.secret, self.api_key, self.api_secret, True)})
+        oauth = OAuth1(self.api_key, self.api_secret, resource_owner_key=self.request_token.token, resource_owner_secret=self.request_token.secret, callback_uri=self.callback, verifier=verifier)
+        resp = requests.post(url, auth=oauth)
         token = parse_qs(resp.text)
         return self.login_with_access_token(token['oauth_token'][0], token['oauth_token_secret'][0])
 
@@ -77,13 +77,13 @@ class Client:
                 url += '?client=' + self.api_key
         json_resp = None
         if method == 'POST':
-            json_resp = self.access_token.post(url, json.dumps(params))
+            json_resp = requests.post(url, json.dumps(params), headers=self.default_headers, auth=self.oauth)
         elif method == 'PUT':
-            json_resp = self.access_token.put(url, json.dumps(params))
+            json_resp = requests.put(url, json.dumps(params), headers=self.default_headers, auth=self.oauth)
         elif method == 'GET':
-            json_resp = self.access_token.get(url)
+            json_resp = requests.get(url, headers=self.default_headers, auth=self.oauth)
         elif method == 'DELETE':
-            json_resp = self.access_token.delete(url)
+            json_resp = requests.delete(url, headers=self.default_headers, auth=self.oauth)
 
         attrs = {}
         try:
