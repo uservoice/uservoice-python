@@ -23,6 +23,8 @@ class Client:
         oauth_hooks = {}
         if api_secret:
             self.oauth = OAuth1(api_key, api_secret, resource_owner_key=self.token, resource_owner_secret=self.secret, callback_uri=callback)
+        else:
+            self.oauth = None
         self.api_url = "{protocol}://{subdomain_name}.{uservoice_domain}".format(
                            subdomain_name=subdomain_name,
                            protocol=(protocol or 'https'),
