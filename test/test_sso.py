@@ -1,3 +1,4 @@
+from __future__ import print_function
 import yaml
 import unittest
 import uservoice
@@ -13,5 +14,5 @@ class TestSso(unittest.TestCase):
             'email': 'myemail@example.com',
             'guid': 'code-myemail@example.com-1'
         }, 10)
-        print "{protocol}://{subdomain}.{domain}?sso={sso}".format(protocol=self.config.get('protocol', 'https'),domain=self.config.get('uservoice_domain', 'uservoice.com'),subdomain=self.config['subdomain_name'],sso=sso_token)
+        print("{protocol}://{subdomain}.{domain}?sso={sso}".format(protocol=self.config.get('protocol', 'https'),domain=self.config.get('uservoice_domain', 'uservoice.com'),subdomain=self.config['subdomain_name'],sso=sso_token))
         self.assertTrue(len(sso_token) > 10)

@@ -21,6 +21,7 @@ setup(name='uservoice',
           'pytz',
           'PyYAML',
           'requests',
+          'future',
           'requests-oauthlib'],
       test_suite='test',
 )

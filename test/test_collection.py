@@ -1,3 +1,6 @@
+from builtins import str
+from builtins import range
+from builtins import object
 import yaml
 import unittest
 import uservoice
@@ -8,7 +11,7 @@ class TestCollection(unittest.TestCase):
         super(TestCollection, self).setUp()
         with open('test/config.yml') as f:
             self.config = yaml.load(f)
-        class MockClient:
+        class MockClient(object):
             def __init__(self, result):
                 self.result = result
             def get(self, path):
@@ -24,7 +27,7 @@ class TestCollection(unittest.TestCase):
                 "formatted_text": "b",
                 "forum": {"id": "1", "name": "General"}
             }]})
-        class PagedClient:
+        class PagedClient(object):
             def get(self, path):
                 page = int(path[len(path) - 1])
                 page_first_index = uservoice.PER_PAGE * (page - 1) + 1

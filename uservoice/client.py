@@ -1,11 +1,14 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import operator
 import array
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import simplejson as json
 import uservoice
 from requests_oauthlib import OAuth1
-from urlparse import parse_qs
+from urllib.parse import parse_qs
 import requests
 version='0.0.19'
 
@@ -14,7 +17,7 @@ class Unauthorized(APIError): pass
 class NotFound(APIError): pass
 class ApplicationError(APIError): pass
 
-class Client:
+class Client(object):
     def __init__(self, subdomain_name, api_key, api_secret=None, oauth_token='', oauth_token_secret='', callback=None, protocol=None, uservoice_domain=None):
         self.request_token = None
         self.token = oauth_token

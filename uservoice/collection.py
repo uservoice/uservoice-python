@@ -1,5 +1,10 @@
+from __future__ import division
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 PER_PAGE = 100
-class Collection:
+class Collection(object):
     def __init__(self, client, query, limit=2**60):
         self.client = client
         self.query = query
@@ -18,7 +23,7 @@ class Collection:
 
     def __getitem__(self, i):
         if i == 0 or (i > 0 and i < len(self)):
-            return self.load_page(int(i/float(PER_PAGE)) + 1)[i % PER_PAGE]
+            return self.load_page(int(old_div(i,float(PER_PAGE))) + 1)[i % PER_PAGE]
         else:
             raise IndexError
 
@@ -37,8 +42,8 @@ class Collection:
 
             if 'response_data' in result:
                 self.response_data = result.pop('response_data')
-                if len(result.values()) > 0:
-                    self.pages[i] = result.values()[0]
+                if len(list(result.values())) > 0:
+                    self.pages[i] = list(result.values())[0]
             else:
                 raise uservoice.NotFound.new('The resource you requested is not a collection')
         return self.pages[i]
