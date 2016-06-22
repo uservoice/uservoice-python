@@ -10,7 +10,7 @@ import urllib.request, urllib.parse, urllib.error
 import pytz
 import array
 import operator
-import simplejson as json
+import json
 import sys
 
 def generate_sso_token(subdomain_name, sso_key, user_attributes, valid_for = 300):

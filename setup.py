@@ -17,7 +17,6 @@ setup(name='uservoice',
       author_email='dev@uservoice.com',
       packages=['uservoice'],
       install_requires=[
-          'simplejson',
           'pycrypto',
           'pytz',
           'PyYAML',

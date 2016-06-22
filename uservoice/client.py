@@ -5,7 +5,7 @@ import operator
 import array
 import urllib.request, urllib.parse, urllib.error
 import urllib.request, urllib.error, urllib.parse
-import simplejson as json
+import json
 import uservoice
 from requests_oauthlib import OAuth1
 from urllib.parse import parse_qs
@@ -95,7 +95,7 @@ class Client(object):
             if json_resp.status_code == 404:
                 attrs = {'errors': {'type': 'record_not_found' }}
             else:
-                attrs = json.loads(json_resp.content)
+                attrs = json_resp.json()
         except json.JSONDecodeError as e:
             raise APIError(e)
 
@@ -148,5 +148,3 @@ class Client(object):
 
     def __exit__(self, type, value, traceback):
         pass
-
-
