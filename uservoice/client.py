@@ -10,7 +10,7 @@ import uservoice
 from requests_oauthlib import OAuth1
 from urllib.parse import parse_qs
 import requests
-version='0.0.20'
+version='0.0.21'
 
 class APIError(RuntimeError): pass
 class Unauthorized(APIError): pass
