@@ -10,11 +10,12 @@ import uservoice
 from requests_oauthlib import OAuth1
 from urllib.parse import parse_qs
 import requests
-version='0.0.22'
+version='0.0.23'
 
 class APIError(RuntimeError): pass
 class Unauthorized(APIError): pass
 class NotFound(APIError): pass
+class RateLimitExceeded(APIError): pass
 class ApplicationError(APIError): pass
 
 class Client(object):
@@ -94,6 +95,8 @@ class Client(object):
         try:
             if json_resp.status_code == 404:
                 attrs = {'errors': {'type': 'record_not_found' }}
+            elif json_resp.status_code == 429:
+                attrs = {'errors': {'type': 'rate_limit_exceeded' }}
             else:
                 attrs = json_resp.json()
         except json.JSONDecodeError as e:
@@ -104,6 +107,8 @@ class Client(object):
                 raise Unauthorized(attrs)
             elif attrs['errors']['type'] == 'record_not_found':
                 raise NotFound(attrs)
+            elif attrs['errors']['type'] == 'rate_limit_exceeded':
+                raise RateLimitExceeded(attrs)
             elif attrs['errors']['type'] == 'application_error':
                 raise ApplicationError(attrs)
             else:
