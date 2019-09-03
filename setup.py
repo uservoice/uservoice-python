@@ -17,7 +17,7 @@ setup(name='uservoice',
       author_email='dev@uservoice.com',
       packages=['uservoice'],
       install_requires=[
-          'pycrypto',
+          'pycryptodome',
           'pytz',
           'PyYAML',
           'requests',
