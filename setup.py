@@ -8,7 +8,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='uservoice',
-      version='0.0.23',
+      version='0.0.24',
       description='UserVoice Python library',
       url = 'http://pypi.python.org/pypi/uservoice/',
       long_description=re.sub(r'```[^\s]*', '', open('README.md').read()),
@@ -17,7 +17,7 @@ setup(name='uservoice',
       author_email='dev@uservoice.com',
       packages=['uservoice'],
       install_requires=[
-          'pycrypto',
+          'pycryptodome',
           'pytz',
           'PyYAML',
           'requests',
